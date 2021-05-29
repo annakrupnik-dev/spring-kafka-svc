@@ -1,0 +1,6 @@
+server:
+  port: 9000
+spring:
+  kafka:
+    topic:
+      name: spring-kafka-demo-1
