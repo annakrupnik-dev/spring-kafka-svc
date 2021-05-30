@@ -1,4 +1,4 @@
-package org.example.spring.service;
+package org.example.spring.service.producer;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.spring.utils.AppConstants;
@@ -28,7 +28,7 @@ public final class KafkaProducerService {
 
             @Override
             public void onSuccess(SendResult<String, String> result) {
-                log.info("Sent message=[ {} ] with offset=[ {} ]", message, result.getRecordMetadata().offset());
+                log.warn("Sent message=[ {} ] with offset=[ {} ]", message, result.getRecordMetadata().offset());
             }
         });
     }

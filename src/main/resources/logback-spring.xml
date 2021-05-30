@@ -3,8 +3,7 @@
 
     <property name="LOGS" value="./logs" />
 
-    <appender name="Console"
-              class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
             <Pattern>
                 %black(%d{ISO8601}) %highlight(%-5level) [%blue(%t)] %yellow(%C{1.}): %msg%n%throwable
@@ -12,36 +11,69 @@
         </layout>
     </appender>
 
-    <appender name="RollingFile"
-              class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOGS}/spring-boot-logger.log</file>
-        <encoder
-                class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+    <appender name="RollingFileProducer" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS}/producer-logger.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
         </encoder>
 
-        <rollingPolicy
-                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- rollover daily and when the file reaches 10 MegaBytes -->
-            <fileNamePattern>${LOGS}/archived/spring-boot-logger-%d{yyyy-MM-dd}.%i.log
+            <fileNamePattern>${LOGS}/archived/producer-logger-%d{yyyy-MM-dd}.%i.log
             </fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy
-                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>10MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
     </appender>
 
+    <appender name="RollingFileConsumer" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS}/consumer-logger.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- rollover daily and when the file reaches 10 MegaBytes -->
+            <fileNamePattern>${LOGS}/archived/consumer-logger-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="LOG_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS}/error-logger.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS}/archived/error-logger-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+        <encoder>
+            <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.example.spring.service.producer" level="INFO" additivity="true">
+        <appender-ref ref="RollingFileProducer"/>
+    </logger>
+
+    <logger name="org.example.spring.service.consumer" level="INFO" additivity="true">
+        <appender-ref ref="RollingFileConsumer"/>
+    </logger>
+
     <!-- LOG everything at INFO level -->
     <root level="info">
-        <appender-ref ref="RollingFile" />
         <appender-ref ref="Console" />
     </root>
 
-    <!-- LOG "org.example*" at TRACE level -->
-    <logger name="org.example" level="trace" additivity="false">
-        <appender-ref ref="RollingFile" />
-        <appender-ref ref="Console" />
+    <logger name="org.example" additivity="false" level="ALL">
+        <appender-ref ref="Console"/>
+        <appender-ref ref="LOG_ERROR"/>
     </logger>
 
 </configuration>

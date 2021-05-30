@@ -1,6 +1,6 @@
 package org.example.spring.controller;
 
-import org.example.spring.service.KafkaProducerService;
+import org.example.spring.service.producer.KafkaProducerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
